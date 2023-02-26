@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: myapp1-volume-snapshot
+spec:
+  volumeSnapshotClassName: csi-gcp-filestore-backup-snap-class
+  source:
+    persistentVolumeClaimName: gke-filestore-pvc

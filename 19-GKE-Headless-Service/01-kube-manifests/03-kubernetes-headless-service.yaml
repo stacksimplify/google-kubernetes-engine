@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service 
+metadata:
+  name: myapp1-headless-service
+spec:
+  #type: ClusterIP # ClusterIP, # NodePort, # LoadBalancer, # ExternalName
+  clusterIP: None
+  selector:
+    app: myapp1
+  ports: 
+    - name: http
+      port: 8080 # Service Port
+      targetPort: 8080 # Container Port
+
+## VERY IMPORTANT NODE
+# 1. When using Headless Service, we should use both the  "Service Port and Target Port" same. 
+# 2. Headless Service directly sends traffic to Pod with Pod IP and Container Port. 
+# 3. DNS resolution directly happens from headless service to Pod IP.
+
+
+

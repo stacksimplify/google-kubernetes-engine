@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wid-demo-with-sa
+  namespace: wid-kns
+spec:
+  containers:
+  - image: google/cloud-sdk:slim
+    name: wid-demo-with-sa
+    command: ["sleep","infinity"]
+  serviceAccountName: wid-ksa
+  nodeSelector:
+    iam.gke.io/gke-metadata-server-enabled: "true"

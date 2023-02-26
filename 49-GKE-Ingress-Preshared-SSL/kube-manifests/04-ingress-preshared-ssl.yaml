@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-preshared-ssl
+  annotations:
+    # External Load Balancer
+    kubernetes.io/ingress.class: "gce"  
+    # Static IP for Ingress Service
+    kubernetes.io/ingress.global-static-ip-name: "gke-ingress-extip1"   
+    # SSL Redirect HTTP to HTTPS
+    networking.gke.io/v1beta1.FrontendConfig: "my-frontend-config"   
+    # External DNS - For creating a Record Set in Google Cloud Cloud DNS
+    external-dns.alpha.kubernetes.io/hostname: app3-default.kalyanreddydaida.com
+    # Pre-shared certificate resources  
+    ingress.gcp.kubernetes.io/pre-shared-cert: "app1-ingress,app2-ingress,app3-ingress"
+spec: 
+  defaultBackend:
+    service:
+      name: app3-nginx-nodeport-service
+      port:
+        number: 80           
+  rules:
+    - host: app1.kalyanreddydaida.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-nginx-nodeport-service
+                port: 
+                  number: 80
+    - host: app2.kalyanreddydaida.com
+      http:
+        paths:                  
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-nginx-nodeport-service
+                port: 
+                  number: 80
+
+

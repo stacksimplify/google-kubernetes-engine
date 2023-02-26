@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service 
+metadata:
+  name: myapp1-lb-service
+  annotations:
+    # External DNS - For creating a Record Set in Google Cloud Cloud DNS
+    external-dns.alpha.kubernetes.io/hostname: extdns-k8s-svc-demo.kalyanreddydaida.com
+spec:
+  type: LoadBalancer # ClusterIp, # NodePort
+  selector:
+    app: myapp1
+  ports: 
+    - name: http
+      port: 80 # Service Port
+      targetPort: 80 # Container Port

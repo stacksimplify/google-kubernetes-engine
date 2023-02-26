@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: restored-filestore-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: standard-rwx
+  resources:
+    requests:
+      storage: 1Ti
+  dataSource:
+    kind: VolumeSnapshot
+    name: myapp1-volume-snapshot
+    apiGroup: snapshot.storage.k8s.io      

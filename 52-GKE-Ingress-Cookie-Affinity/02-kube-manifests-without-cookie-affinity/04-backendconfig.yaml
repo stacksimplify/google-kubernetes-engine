@@ -1,0 +1,17 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: my-backendconfig2
+spec:
+  timeoutSec: 42 # Backend service timeout: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#timeout
+  connectionDraining: # Connection draining timeout: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#draining_timeout
+    drainingTimeoutSec: 62
+  logging: # HTTP access logging: https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#http_logging
+    enable: true
+    sampleRate: 1.0
+
+
+# sampleRate: Specify a value from 0.0 through 1.0, where 0.0 means no packets are logged 
+# and 1.0 means 100% of packets are logged. This field is only relevant if enable is set 
+# to true. sampleRate is an optional field, but if it's configured then enable: true must 
+# also be set or else it is interpreted as enable: false.    

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate # terminates all the pods and replaces them with the new version.
+  template: 
+    metadata: 
+      labels: 
+        app: mysql
+    spec: 
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          #env:
+          #  - name: MYSQL_ROOT_PASSWORD
+          #    value: dbpassword11
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-db-password
+                  key: db-password              
+          ports:
+            - containerPort: 3306
+              name: mysql    
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql    
+            - name: usermanagement-dbcreation-script
+              mountPath: /docker-entrypoint-initdb.d #https://hub.docker.com/_/mysql Refer Initializing a fresh instance                                            
+      volumes: 
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+        - name: usermanagement-dbcreation-script
+          configMap:
+            name: usermanagement-dbcreation-script
+
+
+# VERY IMPORTANT POINTS ABOUT CONTAINERS AND POD VOLUMES: 
+## 1. On-disk files in a container are ephemeral
+## 2. One problem is the loss of files when a container crashes. 
+## 3. Kubernetes Volumes solves above two as these volumes are configured to POD and not container. 
+## Only they can be mounted in Container
+## 4. Using Compute Enginer Persistent Disk CSI Driver is a super generalized approach 
+## for having Persistent Volumes for workloads in Kubernetes
+
+
+## ENVIRONMENT VARIABLES
+# 1. When you create a Pod, you can set environment variables for the 
+# containers that run in the Pod. 
+# 2. To set environment variables, include the env or envFrom field in 
+# the configuration file.
+
+
+## DEPLOYMENT STRATEGIES
+# 1. Rolling deployment: This strategy  replaces pods running the old version of the application with the new version, one by one, without downtime to the cluster.
+# 2. Recreate: This strategy terminates all the pods and replaces them with the new version.
+# 3. Ramped slow rollout: This strategy  rolls out replicas of the new version, while in parallel, shutting down old replicas. 
+# 4. Best-effort controlled rollout: This strategy  specifies a “max unavailable” parameter which indicates what percentage of existing pods can be unavailable during the upgrade, enabling the rollout to happen much more quickly.
+# 5. Canary Deployment: This strategy  uses a progressive delivery approach, with one version of the application serving maximum users, and another, newer version serving a small set of test users. The test deployment is rolled out to more users if it is successful.

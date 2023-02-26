@@ -1,0 +1,14 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: my-snapshotclass
+driver: pd.csi.storage.gke.io
+deletionPolicy: Delete
+#parameters: 
+#  storage-locations: us-east2
+
+# Optional Note: 
+# To use a custom storage location, add a storage-locations parameter to the snapshot class. 
+# To use this parameter, your clusters must use version 1.21 or later.
+
+

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: podpvc-clone
+spec:
+  dataSource:
+    name: mysql-pv-claim # the name of the source PersistentVolumeClaim that you created as part of UMS Web App
+    kind: PersistentVolumeClaim
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard-rwo  # same as the StorageClass of the source PersistentVolumeClaim.   
+  resources:
+    requests:
+      storage: 4Gi # the amount of storage to request, which must be at least the size of the source PersistentVolumeClaim

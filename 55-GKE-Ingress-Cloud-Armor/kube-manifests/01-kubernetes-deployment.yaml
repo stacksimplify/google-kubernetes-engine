@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-armor-demo-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-armor-demo
+  template:
+    metadata:
+      labels:
+        app: cloud-armor-demo
+    spec:
+      containers:
+        - name: cloud-armor-demo
+          image: stacksimplify/kubenginx:1.0.0
+          ports:
+            - containerPort: 80
+          # Readiness Probe (https://cloud.google.com/kubernetes-engine/docs/concepts/ingress#def_inf_hc)            
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /index.html
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5             
+
+
+   

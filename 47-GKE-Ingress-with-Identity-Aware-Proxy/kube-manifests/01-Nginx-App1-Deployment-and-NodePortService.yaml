@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-nginx-deployment
+  labels:
+    app: app1-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1-nginx
+  template:
+    metadata:
+      labels:
+        app: app1-nginx
+    spec:
+      containers:
+        - name: app1-nginx
+          image: stacksimplify/kube-nginxapp1:1.0.0
+          ports:
+            - containerPort: 80
+          # Readiness Probe (https://cloud.google.com/kubernetes-engine/docs/concepts/ingress#def_inf_hc)             
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /app1/index.html
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1-nginx-nodeport-service
+  labels:
+    app: app1-nginx
+  annotations:
+    cloud.google.com/backend-config: '{"default": "my-backendconfig"}'     
+spec:
+  type: NodePort
+  selector:
+    app: app1-nginx
+  ports:
+    - port: 80
+      targetPort: 80
+
+   

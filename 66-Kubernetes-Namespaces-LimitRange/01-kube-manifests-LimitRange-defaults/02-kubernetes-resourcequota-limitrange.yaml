@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: qa-namespace-resource-quota
+  namespace: qa
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi  
+    pods: "3"    
+    configmaps: "3" 
+    persistentvolumeclaims: "3" 
+    secrets: "3" 
+    services: "3" 
+---    
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-cpu-mem-limit-range
+  namespace: qa
+spec:
+  limits:
+    - default:
+        cpu: "400m"  # If not specified default limit is 1 vCPU per container     
+        memory: "256Mi" # If not specified the Container's memory limit is set to 512Mi, which is the default memory limit for the namespace.
+      defaultRequest:
+        cpu: "200m" # If not specified default it will take from whatever specified in limits.default.cpu      
+        memory: "128Mi" # If not specified default it will take from whatever specified in limits.default.memory
+      max: 
+        cpu: "500m"
+        memory: "500Mi"
+      min:       
+        cpu: "100m"
+        memory: "100Mi"
+      type: Container 

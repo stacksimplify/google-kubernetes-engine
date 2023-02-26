@@ -1,0 +1,36 @@
+# [START cloudbuild-delivery]
+steps:
+# This step deploys the new version of our container image
+# in the "standard-cluster-private-1" Google Kubernetes Engine cluster.
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
+  args:
+  - 'apply'
+  - '-f'
+  - 'kubernetes.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_REGION=us-central1'
+  #- 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'  
+  - 'CLOUDSDK_CONTAINER_CLUSTER=standard-cluster-private-1' # Provide GKE Cluster Name
+
+# This step copies the applied manifest to the production branch
+# The COMMIT_SHA variable is automatically
+# replaced by Cloud Build.
+- name: 'gcr.io/cloud-builders/git'
+  id: Copy to production branch
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    set -x && \
+    # Configure Git to create commits with Cloud Build's service account
+    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
+    # Switch to the production branch and copy the kubernetes.yaml file from the candidate branch
+    git fetch origin production && git checkout production && \
+    git checkout $COMMIT_SHA kubernetes.yaml && \
+    # Commit the kubernetes.yaml file with a descriptive commit message
+    git commit -m "Manifest from commit $COMMIT_SHA
+    $(git log --format=%B -n 1 $COMMIT_SHA)" && \
+    # Push the changes back to Cloud Source Repository
+    git push origin production
+# [END cloudbuild-delivery]

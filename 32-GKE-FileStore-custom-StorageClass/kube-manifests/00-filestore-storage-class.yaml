@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: filestore-storage-class
+provisioner: filestore.csi.storage.gke.io # File Store CSI Driver
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  tier: standard # Allowed values standard, premium, or enterprise
+  network: default # The network parameter can be used when provisioning Filestore instances on non-default VPCs. Non-default VPCs require special firewall rules to be set up.

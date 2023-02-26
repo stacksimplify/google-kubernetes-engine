@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-external-ip
+  annotations:
+    # External Load Balancer
+    kubernetes.io/ingress.class: "gce"  
+    # Static IP for Ingress Service
+    kubernetes.io/ingress.global-static-ip-name: "gke-ingress-extip1"   
+spec: 
+  defaultBackend:
+    service:
+      name: app3-nginx-nodeport-service
+      port:
+        number: 80                            
+  rules:
+    - http:
+        paths:           
+          - path: /app1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-nginx-nodeport-service
+                port: 
+                  number: 80
+          - path: /app2
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-nginx-nodeport-service
+                port: 
+                  number: 80
+    

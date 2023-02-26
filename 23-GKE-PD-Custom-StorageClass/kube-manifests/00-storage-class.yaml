@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: gke-pd-standard-rwo-sc
+provisioner: pd.csi.storage.gke.io
+volumeBindingMode: WaitForFirstConsumer 
+allowVolumeExpansion: true
+reclaimPolicy: Retain 
+parameters:
+  type: pd-balanced # Other Options supported are pd-ssd, pd-standard
+
+# STORAGE CLASS 
+# 1. A StorageClass provides a way for administrators 
+# to describe the "classes" of storage they offer.
+# 2. Here we are offering GCP PD Storage for GKE Cluster

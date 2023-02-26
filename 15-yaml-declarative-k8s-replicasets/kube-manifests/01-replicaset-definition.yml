@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet  
+metadata: # Dictionary
+  name: myapp2-rs
+spec: # Dictionary
+  replicas: 3
+  selector: 
+    matchLabels: 
+      app: myapp2
+  template:
+    metadata: # Dictionary
+      name: myapp2-pod
+      labels:
+        app: myapp2 # Key Value Pairs   
+    spec:
+      containers: # List
+        - name: myapp2-container
+          image: stacksimplify/kubenginx:2.0.0
+          ports: 
+            - containerPort: 80          

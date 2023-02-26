@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: #Dictionary
+  name: myapp1-deployment
+spec: # Dictionary
+  replicas: 5 
+  selector:
+    matchLabels:
+      app: myapp1
+  template:  
+    metadata: # Dictionary
+      name: myapp1-pod
+      labels: # Dictionary
+        app: myapp1  # Key value pairs
+    spec:
+      containers: # List
+        - name: myapp1-container
+          image: stacksimplify/kubenginx:1.0.0
+          ports: 
+            - containerPort: 80  
+          resources:
+            requests:
+              memory: "128Mi" # 128 MebiByte is equal to 135 Megabyte (MB)
+              cpu: "200m" # `m` means milliCPU
+            limits:
+              memory: "256Mi"
+              cpu: "400m"  # 1000m is equal to 1 VCPU core                                               
+    

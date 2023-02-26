@@ -1,0 +1,4 @@
+bindings:
+- members:
+  - serviceAccount:1057267725005@cloudbuild.gserviceaccount.com
+  role: roles/source.writer

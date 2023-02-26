@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cdn-demo-nodeport-service2
+  annotations:
+    #cloud.google.com/backend-config: '{"ports": {"80":"my-backendconfig2"}}'
+    cloud.google.com/backend-config: '{"default": "my-backendconfig2"}'     
+spec:
+  type: NodePort
+  selector:
+    app: cdn-demo2
+  ports:
+    - port: 80
+      targetPort: 8080

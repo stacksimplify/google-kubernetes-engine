@@ -1,0 +1,58 @@
+# [START cloudbuild - Docker Image Build]
+steps:
+# This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/myapps-repository/myapp1:$SHORT_SHA'
+  - '.'
+
+# This step pushes the image to Artifact Registry
+# The PROJECT_ID and SHORT_SHA variables are automatically
+# replaced by Cloud Build.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/myapps-repository/myapp1:$SHORT_SHA'
+# [END cloudbuild - Docker Image Build]
+
+
+# [START cloudbuild-trigger-cd]
+# This step clones the myapp1-k8s-repo repository
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Clone myapp1-k8s-repo repository
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    gcloud source repos clone myapp1-k8s-repo && \
+    cd myapp1-k8s-repo && \
+    git checkout candidate && \
+    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+# This step generates the new manifest
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Generate Kubernetes manifest
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+     sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes.yaml.tpl | \
+     sed "s/COMMIT_SHA/${SHORT_SHA}/g" > myapp1-k8s-repo/kubernetes.yaml
+# This step pushes the manifest back to myapp1-k8s-repo
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Push manifest
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    set -x && \
+    cd myapp1-k8s-repo && \
+    git add kubernetes.yaml && \
+    git commit -m "Deploying image us-central1-docker.pkg.dev/$PROJECT_ID/myapps-repository/myapp1:${SHORT_SHA}
+    Built from commit ${COMMIT_SHA} of repository myapp1-app-repo
+    Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
+    git push origin candidate
+# [END cloudbuild-trigger-cd]

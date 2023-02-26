@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-gcp-filestore-backup-snap-class
+driver: filestore.csi.storage.gke.io
+parameters:
+  type: backup
+deletionPolicy: Delete

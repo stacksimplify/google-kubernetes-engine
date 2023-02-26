@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cdn-demo-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cdn-demo
+  template:
+    metadata:
+      labels:
+        app: cdn-demo
+    spec:
+      containers:
+        - name: cdn-demo
+          image: us-docker.pkg.dev/google-samples/containers/gke/hello-app-cdn:1.0
+          ports:
+            - containerPort: 8080
+
+
+   

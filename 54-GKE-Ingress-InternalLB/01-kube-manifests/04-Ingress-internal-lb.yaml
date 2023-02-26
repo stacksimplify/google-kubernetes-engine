@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-internal-lb
+  annotations:
+    # If the class annotation is not specified it defaults to "gce".
+    # gce: external load balancer
+    # gce-internal: internal load balancer  
+    # Internal Load Balancer
+    kubernetes.io/ingress.class: "gce-internal"  
+spec: 
+  defaultBackend:
+    service:
+      name: app3-nginx-nodeport-service
+      port:
+        number: 80                            
+  rules:
+    - http:
+        paths:           
+          - path: /app1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-nginx-nodeport-service
+                port: 
+                  number: 80
+          - path: /app2
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-nginx-nodeport-service
+                port: 
+                  number: 80
+           
+      
+    

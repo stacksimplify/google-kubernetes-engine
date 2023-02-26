@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-cdn-demo
+  annotations:
+    # External Load Balancer
+    kubernetes.io/ingress.class: "gce"  
+    # Static IP for Ingress Service
+    kubernetes.io/ingress.global-static-ip-name: "gke-ingress-extip1"   
+    # External DNS - For creating a Record Set in Google Cloud Cloud DNS
+    external-dns.alpha.kubernetes.io/hostname: ingress-with-cookie-affinity.kalyanreddydaida.com
+spec:          
+  defaultBackend:
+    service:
+      name: cdn-demo-nodeport-service
+      port:
+        number: 80     

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: usermgmt-webapp  
+  labels:
+    app: usermgmt-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-webapp
+  template:  
+    metadata:
+      labels: 
+        app: usermgmt-webapp
+    spec:
+      initContainers:
+        - name: init-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']      
+      containers:
+        - name: usermgmt-webapp
+          image: stacksimplify/kube-usermgmt-webapp:1.0.0-MySQLDB
+          ports: 
+            - containerPort: 8080           
+          env:
+            - name: DB_HOSTNAME
+              value: "mysql"            
+            - name: DB_PORT
+              value: "3306"            
+            - name: DB_NAME
+              value: "webappdb"            
+            - name: DB_USERNAME
+              value: "root"            
+            #- name: DB_PASSWORD
+            #  value: "dbpassword11"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-db-password
+                  key: db-password 
+          # Liveness Probe HTTP Request
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+              httpHeaders:
+              - name: Custom-Header
+                value: Awesome          
+            initialDelaySeconds: 60 # initialDelaySeconds field tells  the kubelet that it should wait 60 seconds before performing the first probe. 
+            periodSeconds: 10 # periodSeconds field specifies kubelet should perform a liveness probe every 10 seconds. 
+            failureThreshold: 3 # Default Value
+            successThreshold: 1 # Default value
+          # Startup Probe - Wait for 5 minutes till the application starts            
+          startupProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60              
+            periodSeconds: 10            
+            failureThreshold: 30  # The application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup.
+            successThreshold: 1 # Default value
+            
+# Understand Startup Probe ?
+# 1. Sometimes, you have to deal with legacy applications that might require an additional startup time 
+# on their first initialization. 
+# 2. The application will have a maximum of 5 minutes (30 * 10 = 300s) to 
+# finish its startup. 
+# 3. Once the startup probe has succeeded once, the liveness probe takes 
+# over to provide a fast response to container deadlocks. 
+# 4. If the startup probe never succeeds, the container is killed after 
+# 300s and subject to the pod's restartPolicy.
+
+

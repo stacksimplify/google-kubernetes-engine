@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: managed-cert-for-ingress
+spec:
+  domains:
+    - default-ingress.kalyanreddydaida.com
+    - app1-ingress.kalyanreddydaida.com
+    - app2-ingress.kalyanreddydaida.com

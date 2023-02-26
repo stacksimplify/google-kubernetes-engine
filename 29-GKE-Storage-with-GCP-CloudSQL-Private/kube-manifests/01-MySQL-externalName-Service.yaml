@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-externalname-service
+spec:
+  type: ExternalName
+  externalName: 10.80.0.3

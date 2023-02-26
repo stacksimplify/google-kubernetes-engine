@@ -1,0 +1,30 @@
+# Simple Key Value Pairs
+person: # Dictionary
+  name: kalyan
+  age: 23
+  city: Hyderabad
+  hobbies: # List 
+    - cooking
+    - cycling 
+  hobbies: [cooking, cycling]   # Another Notation for Lists
+  friends: # Multiple Lists
+    - name: friend1
+      age: 23
+    - name: friend2
+      age: 22   
+--- # YAML Document Separator         
+apiVersion: v1 # String
+kind: Pod  # String
+metadata: # Dictionary
+  name: myapp-pod
+  labels: # Dictionary 
+    app: myapp         
+spec:
+  containers: # List
+    - name: myapp
+      image: stacksimplify/kubenginx:1.0.0
+      ports: # Multiple Lists
+        - containerPort: 80
+          protocol: "TCP"
+        - containerPort: 81
+          protocol: "TCP"

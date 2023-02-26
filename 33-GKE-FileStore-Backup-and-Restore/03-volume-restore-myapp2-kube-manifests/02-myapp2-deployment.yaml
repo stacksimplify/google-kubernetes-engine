@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: #Dictionary
+  name: myapp2-deployment
+spec: # Dictionary
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp2
+  template:  
+    metadata: # Dictionary
+      name: myapp2-pod
+      labels: # Dictionary
+        app: myapp2  # Key value pairs
+    spec:
+      containers: # List
+        - name: myapp2-container
+          image: stacksimplify/kubenginx:1.0.0
+          ports: 
+            - containerPort: 80  
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /usr/share/nginx/html/filestore
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: restored-filestore-pvc
+    

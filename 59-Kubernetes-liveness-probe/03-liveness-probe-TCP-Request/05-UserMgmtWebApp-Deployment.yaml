@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: usermgmt-webapp  
+  labels:
+    app: usermgmt-webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usermgmt-webapp
+  template:  
+    metadata:
+      labels: 
+        app: usermgmt-webapp
+    spec:
+      initContainers:
+        - name: init-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']      
+      containers:
+        - name: usermgmt-webapp
+          image: stacksimplify/kube-usermgmt-webapp:1.0.0-MySQLDB
+          ports: 
+            - containerPort: 8080           
+          env:
+            - name: DB_HOSTNAME
+              value: "mysql"            
+            - name: DB_PORT
+              value: "3306"            
+            - name: DB_NAME
+              value: "webappdb"            
+            - name: DB_USERNAME
+              value: "root"            
+            #- name: DB_PASSWORD
+            #  value: "dbpassword11"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-db-password
+                  key: db-password 
+          # Liveness Probe TCP request
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 60 # initialDelaySeconds field tells  the kubelet that it should wait 60 seconds before performing the first probe. 
+            periodSeconds: 10 # periodSeconds field specifies kubelet should perform a liveness probe every 10 seconds. 
+            failureThreshold: 3 # Default Value
+            successThreshold: 1 # Default value
+
+
+# Types of Liveness Probes we can define
+# 1. Linux Command
+# 2. HTTP Request
+# 3. TCP Ping                                        
+
+# What happens ??
+# 1. The kubelet will run the first liveness TCP probe 60 seconds after the 
+# container starts. 
+# 2. This will attempt to connect to the UMS container on port 8080. 
+# If the liveness probe fails, the container will be restarted.

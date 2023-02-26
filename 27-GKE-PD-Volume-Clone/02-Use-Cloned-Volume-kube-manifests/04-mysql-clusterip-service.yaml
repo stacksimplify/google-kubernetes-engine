@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mysql2
+spec:
+  selector:
+    app: mysql2 
+  ports: 
+    - port: 3306  
+  clusterIP: None # This means we are going to use Pod IP    

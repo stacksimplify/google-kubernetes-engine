@@ -1,0 +1,30 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: regionalpd-storageclass
+provisioner: pd.csi.storage.gke.io
+parameters:
+  #type: pd-standard # Note: To use regional persistent disks of type pd-standard, set the PersistentVolumeClaim.storage attribute to 200Gi or higher. If you need a smaller persistent disk, use pd-ssd instead of pd-standard.
+  type: pd-ssd 
+  replication-type: regional-pd
+volumeBindingMode: WaitForFirstConsumer
+#allowedTopologies:  ##-->COMMENTED BECAUSE WE ARE USING REGIONAL GKE CLUSTER
+#- matchLabelExpressions:
+#  - key: topology.gke.io/zone
+#    values:
+#    - us-central1-c
+#    - us-central1-b
+
+## Important Note - Regional PD 
+# 1. If using a regional GKE cluster, you can leave allowedTopologies unspecified. 
+# 2. If you do this, when you create a Pod that consumes a 
+#PersistentVolumeClaim which uses this StorageClass a regional persistent 
+#disk is provisioned with two zones. One zone is the same as the zone 
+#that the Pod is scheduled in. The other zone is randomly picked from 
+#the zones available to the cluster.
+# 3. When using a zonal cluster, allowedTopologies must be set.    
+
+# STORAGE CLASS 
+# 1. A StorageClass provides a way for administrators 
+# to describe the "classes" of storage they offer.
+# 2. Here we are offering GCP PD Storage for GKE Cluster
