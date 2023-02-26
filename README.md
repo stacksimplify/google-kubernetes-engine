@@ -1,5 +1,3 @@
-# Google Kubernetes Engine GKE with DevOps 75 Real-World Demos
-
 # [Google Kubernetes Engine GKE with DevOps 75 Real-World Demos](https://links.stacksimplify.com/terraform-on-aws-eks-kubernetes-iac-sre)
 
 [![Image](https://stacksimplify.com/course-images/terraform-on-aws-eks-kubernetes.png "Google Kubernetes Engine GKE with DevOps 75 Real-World Demos")](https://links.stacksimplify.com/terraform-on-aws-eks-kubernetes-iac-sre)
