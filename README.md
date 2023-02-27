@@ -176,7 +176,7 @@
 - Amazing Hands-on Step By Step Learning Experiences
 - Real Implementation Experience
 - Friendly Support in the Q&A section
-- 30 Day "No Questions Asked" Money Back Guarantee!
+- "30-Day "No Questions Asked" Money Back Guaranteed by Udemy"
 
 ## My Other AWS Courses
 - [Udemy Enroll](https://www.stacksimplify.com/azure-aks/courses/stacksimplify-best-selling-courses-on-udemy/)
