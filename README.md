@@ -1,4 +1,4 @@
-# [Google Kubernetes Engine GKE with DevOps 75 Real-World Demos](https://links.stacksimplify.com/gcp-google-kubernetes-engine-gke-with-devops)
+# [GCP GKE Google Kubernetes Engine DevOps 75 Real-World Demos](https://links.stacksimplify.com/gcp-google-kubernetes-engine-gke-with-devops)
 
 [![Image](images/course-title.png "Google Kubernetes Engine GKE with DevOps 75 Real-World Demos")](https://links.stacksimplify.com/gcp-google-kubernetes-engine-gke-with-devops)
 
