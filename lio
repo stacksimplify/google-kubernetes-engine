@@ -1,0 +1,7 @@
+#! /bin/bash
+
+echo "my name is lionel sakoue" 
+
+sudo yum install maven -y 
+sudo yum install git 
+sudo yum install open gdk 
